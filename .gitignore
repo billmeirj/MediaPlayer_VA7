@@ -1,0 +1,11 @@
+# Kompilierte Java-Dateien
+*.class
+/bin/
+
+# Eclipse-spezifische Konfigurationsdateien
+.settings/
+.classpath
+.project
+
+# Temporäre Dateien und Logs
+*.log
