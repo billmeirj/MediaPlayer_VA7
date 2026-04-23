@@ -1,5 +1,7 @@
+import studiplayer.basic.BasicPlayer;
+import java.io.*;
 
-public class AudioFile {
+public abstract class AudioFile {
 	
 	private String pathname;
 	private String filename;
@@ -160,4 +162,25 @@ public class AudioFile {
 		}
 		
 	}
+	
+	public void play () {
+		
+	}
+	
+	public void togglePause() {
+		
+	}
+	
+	public void stop () {
+		
+	}
+	
+	public String formatDuration () {
+		return "";
+	}
+	
+	public String formatPosition () {
+		return "";
+	}
+	
 }
