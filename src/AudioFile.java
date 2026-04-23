@@ -17,6 +17,11 @@ public abstract class AudioFile {
 		
 		parsePathname(path);
 		parseFilename(this.filename);
+		
+		File file = new File(this.pathname);
+		if (!file.canRead()) {
+			throw new RuntimeException("Datei ist nicht lesbar: " + this.pathname);
+		}
 	}
 	
 	private boolean isWindows() {
@@ -163,24 +168,14 @@ public abstract class AudioFile {
 		
 	}
 	
-	public void play () {
-		
-	}
+	public abstract void play ();
 	
-	public void togglePause() {
-		
-	}
+	public abstract void togglePause();
 	
-	public void stop () {
-		
-	}
+	public abstract void stop ();
 	
-	public String formatDuration () {
-		return "";
-	}
+	public abstract String formatDuration ();
 	
-	public String formatPosition () {
-		return "";
-	}
+	public abstract String formatPosition ();
 	
 }
