@@ -31,8 +31,4 @@ public abstract class SampledFile extends AudioFile {
 	public static String timeFormatter (long timeInMicroSeconds) {
 		return "";
 	}
-	
-	public long getDuration() {
-		return 0L;
-	}
 }

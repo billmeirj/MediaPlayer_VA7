@@ -5,8 +5,9 @@ public abstract class AudioFile {
 	
 	private String pathname;
 	private String filename;
-	private String author;
-	private String title;
+	protected String author;
+	protected String title;
+	protected long duration;
 
 	public AudioFile(){
 		this("");
@@ -178,5 +179,9 @@ public abstract class AudioFile {
 	public abstract String formatDuration ();
 	
 	public abstract String formatPosition ();
+	
+	public long getDuration() {
+		return duration;
+	}
 	
 }
