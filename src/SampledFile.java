@@ -21,14 +21,22 @@ public abstract class SampledFile extends AudioFile {
 	}
 	
 	public String formatDuration() {
-		return "";
+		return timeFormatter(getDuration());
 	}
 	
 	public String formatPosition () {
-		return "";
+		return timeFormatter(BasicPlayer.getPosition());
 	}
 	
 	public static String timeFormatter (long timeInMicroSeconds) {
-		return "";
+		if (timeInMicroSeconds < 0L || timeInMicroSeconds > 5999999999L) {
+			throw new RuntimeException("Zeitangabe außerhalb des gültigen Bereichs!");
+		}
+		
+		long totalSec = timeInMicroSeconds / 1000000L;
+		long minutes = totalSec / 60;
+		long seconds = totalSec % 60;
+		
+		return String.format("%02d:%02d", minutes, seconds);
 	}
 }
