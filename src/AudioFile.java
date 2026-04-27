@@ -134,12 +134,7 @@ public abstract class AudioFile {
 		//Autor finden, Bindestrich suchen
 		int seperator = result.indexOf(" - ");
 		int laengeTrenner = 3;
-		
-		if (seperator < 0) {
-			seperator = result.indexOf("-");
-			laengeTrenner = 1;
-		}
-		
+				
 		//Autor und Titel richtig trennen und speichern
 		if(seperator >= 0 && result.length() > 1) {
 			String interpret = result.substring(0, seperator);

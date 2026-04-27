@@ -57,6 +57,7 @@ public class TaggedFileTest {
                 "toString not correct",
                 "beethoven-ohne-album - 00:06",
                 f3.toString());
+        System.out.print(f3.toString());
     }
 
     @Test

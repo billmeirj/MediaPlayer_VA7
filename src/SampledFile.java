@@ -1,4 +1,5 @@
 import studiplayer.basic.BasicPlayer;
+
 public abstract class SampledFile extends AudioFile {
 	public SampledFile () {
 		super();
@@ -28,6 +29,7 @@ public abstract class SampledFile extends AudioFile {
 		return timeFormatter(BasicPlayer.getPosition());
 	}
 	
+	//umrechnung in Minuten und Sekunden
 	public static String timeFormatter (long timeInMicroSeconds) {
 		if (timeInMicroSeconds < 0L || timeInMicroSeconds > 5999999999L) {
 			throw new RuntimeException("Zeitangabe außerhalb des gültigen Bereichs!");

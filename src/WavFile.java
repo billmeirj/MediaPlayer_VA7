@@ -28,6 +28,7 @@ public class WavFile extends SampledFile{
 		this.duration= computeDuration(frame, rate);
 	}
 	
+	//überschreiben von toString (), für Spielzeit + Trenner
 	@Override
 	public String toString() {
 		String base = super.toString();
