@@ -66,20 +66,62 @@ public class PlayList {
 	}
 	
 	public void loadFromM3U (String pathname) {
+		Scanner scanner = null;
 		
+		try {
+			scanner =new Scanner(new File(pathname));
+			//int lineNum = 1;
+			
+			while(scanner.hasNextLine()) {
+				String line = scanner.nextLine().trim();
+				
+				if (line.isEmpty()) {
+					continue;
+				}
+				
+				if (line.startsWith("#")) {
+					continue;
+				}
+				
+				AudioFile newSong = new TaggedFile(line);
+				this.audioFile.add(newSong);
+			}
+		} catch (IOException e) {
+			throw new RuntimeException("Fehler beim Lesen der Datei " + pathname);
+		} 
+//		catch (Exception e) {
+//			System.err.println("Fehler beim Erstellen von AudioFile: " + e.getMessage());
+//		}
+		finally {
+			System.out.println("File " + pathname + " read!");
+			scanner.close();
+		}
 	}
 	
 	public void saveAsM3U (String pathname) {
 		FileWriter writer = null;
-		String sep = System.getProperty("line.separator");
+		String seperator = System.getProperty("line.separator");
 		
 		try {
+			//neue File "öffnen"
+			//schreiben in die Datei
 			writer = new FileWriter(pathname);
 			for (AudioFile file : this.audioFile) {
-				String path = getPathname();
-				writer.write(path + sep);
+				String path = file.getPathname();
+				writer.write(path + seperator);
 			}
-		}
+		} catch (IOException e) {
+			throw new RuntimeException("Schreiben der Datei " + pathname + " nicht möglich!");
+		} finally {
+				try {
+					System.out.println("File " + pathname + " write!");
+					writer.close();
+				} catch (Exception e){
+					
+				}
+			}
+		
+		
 	}
 	
 	public int getCurrent() {
