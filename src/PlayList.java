@@ -3,8 +3,15 @@ import java.util.List;
 
 public class PlayList {
 	
-//	public PlayList() {
-//	}
+	private int current;
+	
+	public PlayList() {
+		this.current = 0;
+	}
+	
+	public PlayList(String m3uPathname) {
+		this();
+	}
 
 	//Liste für Aggregation
 	private List<AudioFile> audioFile = new LinkedList<AudioFile>();
@@ -31,4 +38,42 @@ public class PlayList {
 		int anzahl = this.audioFile.size();
 		return anzahl;
 	}
+	
+	public AudioFile currentAudioFile() {
+		if (audioFile.isEmpty()) {
+			return null;
+		}
+		
+		if (current < 0 || current >= audioFile.size()) {
+			return null;
+		}
+		
+		return audioFile.get(current);
+	}
+	
+	public void nextSong() {
+		current ++;
+		
+		if (current < 0 || current >= audioFile.size()) {
+			current = 0;
+		}
+		
+	}
+	
+	public void loadFromM3U (String pathname) {
+		
+	}
+	
+	public void saveAsM3U (String prathname) {
+		
+	}
+	
+	public int getCurrent() {
+		return current;
+	}
+	
+	public void setCurrent(int current) {
+		this.current = current;		
+	}
+	
 }
