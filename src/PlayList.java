@@ -1,5 +1,10 @@
 import java.util.LinkedList;
 import java.util.List;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Scanner;
+
 
 public class PlayList {
 	
@@ -64,8 +69,17 @@ public class PlayList {
 		
 	}
 	
-	public void saveAsM3U (String prathname) {
+	public void saveAsM3U (String pathname) {
+		FileWriter writer = null;
+		String sep = System.getProperty("line.separator");
 		
+		try {
+			writer = new FileWriter(pathname);
+			for (AudioFile file : this.audioFile) {
+				String path = getPathname();
+				writer.write(path + sep);
+			}
+		}
 	}
 	
 	public int getCurrent() {
