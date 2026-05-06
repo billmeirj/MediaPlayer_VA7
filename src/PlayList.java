@@ -16,6 +16,7 @@ public class PlayList {
 	
 	public PlayList(String m3uPathname) {
 		this();
+		this.loadFromM3U(m3uPathname);
 	}
 
 	//Liste für Aggregation
@@ -66,6 +67,9 @@ public class PlayList {
 	}
 	
 	public void loadFromM3U (String pathname) {
+		
+		this.audioFile.clear();
+		this.current = 0;
 		Scanner scanner = null;
 		
 		try {
@@ -83,16 +87,12 @@ public class PlayList {
 					continue;
 				}
 				
-				AudioFile newSong = new TaggedFile(line);
+				AudioFile newSong = AudioFileFactory.createAudioFile(line);
 				this.audioFile.add(newSong);
 			}
 		} catch (IOException e) {
 			throw new RuntimeException("Fehler beim Lesen der Datei " + pathname);
-		} 
-//		catch (Exception e) {
-//			System.err.println("Fehler beim Erstellen von AudioFile: " + e.getMessage());
-//		}
-		finally {
+		} finally {
 			System.out.println("File " + pathname + " read!");
 			scanner.close();
 		}
