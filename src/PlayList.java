@@ -15,7 +15,6 @@ public class PlayList {
 	}
 	
 	public PlayList(String m3uPathname) {
-		this();
 		this.loadFromM3U(m3uPathname);
 	}
 
@@ -74,7 +73,6 @@ public class PlayList {
 		
 		try {
 			scanner =new Scanner(new File(pathname));
-			//int lineNum = 1;
 			
 			while(scanner.hasNextLine()) {
 				String line = scanner.nextLine().trim();
@@ -120,8 +118,6 @@ public class PlayList {
 					
 				}
 			}
-		
-		
 	}
 	
 	public int getCurrent() {
