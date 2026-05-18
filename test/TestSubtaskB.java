@@ -1,85 +1,111 @@
+package studiplayer.test;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import java.lang.reflect.Field;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 import org.junit.Test;
 
+import studiplayer.audio.AudioFileFactory;
+import studiplayer.audio.NotPlayableException;
+import studiplayer.audio.PlayList;
+import studiplayer.audio.TaggedFile;
+import studiplayer.audio.WavFile;
+
 public class TestSubtaskB {
+    @Test
+    public void testFactoryException() {
+        try {
+            AudioFileFactory.createAudioFile("does not exist.mp3");
+            fail("Expected exception NotPlayableException");
+        } catch (NotPlayableException e) {
+            // Expected
+        }
+    }
 
-	@Test
-	public void testCurrentAttribute() {
-		// check if there is an attribute of type int named current
-		// check
-		PlayList playList = new PlayList();
-		Field[] attributes = playList.getClass().getDeclaredFields();
+    @Test
+    public void testWavFileException() {
+        try {
+            new WavFile("does not exist.wav");
+            fail("Expected exception NotPlayableException");
+        } catch (NotPlayableException e) {
+            // Expected
+        }
+    }
 
-		Field currentAttribute = null;
-		for (Field attribute : attributes) {
-			if (attribute.getName().equals("current")) {
-				currentAttribute = attribute;
-				break;
-			}
-		}
-		if (currentAttribute == null) {
-			fail("PlayList should declare an attribute named 'current'!");
-		}
-		if (!currentAttribute.getType().getSimpleName().equals("int")) {
-			fail("current attribute should be of type int!");
-		}
+    @Test
+    public void testTaggedFileException() {
+        try {
+            new WavFile("does not exist.mp3");
+            fail("Expected exception NotPlayableException");
+        } catch (NotPlayableException e) {
+            // Expected
+        }
+    }
 
-		// check if getter and setter work correctly
-		AudioFile tf1 = new TaggedFile("audiofiles/Rock 812.mp3");
-		AudioFile tf2 = new TaggedFile("audiofiles/Motiv 5. Symphonie von Beethoven.ogg");
-		playList.getList().add(tf1);
-		playList.getList().add(tf2);
-		assertEquals("Initial value for current not correct!",
-				0, playList.getCurrent());
-		playList.setCurrent(1);
-		assertEquals("Value for current not correct!", 1, playList.getCurrent());
-	}
+    @Test
+    public void testPlayException() throws IOException {
+        File file = File.createTempFile("test", "mp3");
+        try {
+            TaggedFile taggedFile = new TaggedFile();
+            taggedFile.parsePathname(file.getAbsolutePath());
+            taggedFile.parseFilename(taggedFile.getFilename());
+            taggedFile.play();
+            fail("Expected exception NotPlayableException");
+        } catch (NotPlayableException e) {
+            // Expected
+        }
+    }
 
-	@Test
-	public void testNextSong() {
-		PlayList pl = new PlayList();
-		AudioFile tf1 = new TaggedFile("audiofiles/Rock 812.mp3");
-		AudioFile tf2 = new TaggedFile("audiofiles/Motiv 5. Symphonie von Beethoven.ogg");
-		AudioFile tf3 = new TaggedFile("audiofiles/Eisbach Deep Snow.ogg");
+    @Test
+    public void testReadAndStoreTagsException() throws IOException {
+        File file = File.createTempFile("test", "mp3");
+        try {
+            TaggedFile taggedFile = new TaggedFile();
+            taggedFile.parsePathname(file.getAbsolutePath());
+            taggedFile.parseFilename(taggedFile.getFilename());
+            taggedFile.readAndStoreTags();
+            fail("Expected exception NotPlayableException");
+        } catch (NotPlayableException e) {
+            // Expected
+        }
+    }
 
-		pl.getList().add(tf1);
-		pl.getList().add(tf2);
-		pl.getList().add(tf3);
+    @Test
+    public void testReadAndSetDurationException() throws IOException {
+        File file = File.createTempFile("test", "wav");
+        try {
+            WavFile wavFile = new WavFile();
+            wavFile.parsePathname(file.getAbsolutePath());
+            wavFile.parseFilename(wavFile.getFilename());
+            wavFile.readAndSetDurationFromFile();
+            fail("Expected exception NotPlayableException");
+        } catch (NotPlayableException e) {
+            // Expected
+        }
+    }
 
-		assertEquals("wrong current index!", 0, pl.getCurrent());
-		pl.nextSong();
-		assertEquals("wrong current index after change to next song!",
-				1, pl.getCurrent());
-		pl.nextSong();
-		assertEquals("wrong current index after change to next song!",
-				2, pl.getCurrent());
-		pl.nextSong();
-		assertEquals("wrong current index after change to next song!",
-				0, pl.getCurrent());
-	}
-
-	@Test
-	public void testNextSongInvalidIndex() {
-		PlayList pl = new PlayList();
-		AudioFile tf1 = new TaggedFile("audiofiles/Rock 812.mp3");
-		AudioFile tf2 = new TaggedFile("audiofiles/Motiv 5. Symphonie von Beethoven.ogg");
-		AudioFile tf3 = new TaggedFile("audiofiles/Eisbach Deep Snow.ogg");
-
-		pl.getList().add(tf1);
-		pl.getList().add(tf2);
-		pl.getList().add(tf3);
-
-		pl.setCurrent(4);
-		assertEquals("wrong current index!", 4, pl.getCurrent());
-		pl.nextSong();
-		assertEquals("wrong current index after change to next song!",
-				0, pl.getCurrent());
-		pl.nextSong();
-		assertEquals("wrong current index after change to next song!",
-				1, pl.getCurrent());
-	}
+    @Test
+    public void testPlayListCanReadParts() throws IOException {
+        File file = File.createTempFile("test", "m3u");
+        try (FileWriter writer = new FileWriter(file)) {
+            writer.write(new StringBuilder()
+                    .append("audiofiles/Rock 812.mp3\n")
+                    .append("audiofiles/wellenmeister_awakening.ogg\n")
+                    .append("audiofiles/unknown.mp3\n")
+                    .append("audiofiles/other.abc\n")
+                    .toString());
+            writer.close();
+        }
+        PlayList pl = new PlayList();
+        try {
+            pl.loadFromM3U(file.getAbsolutePath());
+        } catch (Throwable t) {
+            fail("We should not get an exception");
+        }
+        assertEquals(2, pl.size());
+    }
 }

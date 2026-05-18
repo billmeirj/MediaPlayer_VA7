@@ -1,61 +1,63 @@
-import static org.junit.Assert.assertEquals;
+package studiplayer.test;
 
-import java.io.File;
-import java.util.ArrayList;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
 
 import org.junit.Test;
 
+import studiplayer.audio.AudioFile;
+import studiplayer.audio.ControllablePlayListIterator;
+import studiplayer.audio.NotPlayableException;
+import studiplayer.audio.TaggedFile;
+
 public class TestSubtaskC {
-	static private List<String> readFile(String filename) {
-		List<String> lines = new ArrayList<>();
-		Scanner scanner = null;
+    @Test
+    public void testIterator() throws NotPlayableException {
+        List<AudioFile> list = Arrays.asList(
+                new TaggedFile("audiofiles/Rock 812.mp3"),
+                new TaggedFile("audiofiles/Motiv 5. Symphonie von Beethoven.ogg"),
+                new TaggedFile("audiofiles/Eisbach Deep Snow.ogg"));
 
-		try {
-			scanner = new Scanner(new File(filename));
-			while (scanner.hasNextLine()) {
-				String line = scanner.nextLine();
-				if (line.isBlank() || line.charAt(0) == '#') {
-					continue;
-				}
-				lines.add(line);
-			}
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		} finally {
-			try {
-				System.out.println("File " + filename + " read!");
-				scanner.close();
-			} catch (Exception e) {
-				// ignore; probably because file could not be opened
-			}
-		}
+        ControllablePlayListIterator iterator = new ControllablePlayListIterator(list);
 
-		return lines;
-	}
+        assertTrue("Iterator should provide one more result", iterator.hasNext());
+        assertEquals("Should provide Rock 812.mp3 as first iteration result", list.get(0), iterator.next());
+        assertTrue("Iterator should provide one more result", iterator.hasNext());
+        assertEquals("Should provide Motiv 5. Symphonie von Beethoven.ogg as first iteration result", list.get(1),
+                iterator.next());
+        assertTrue("Iterator should provide one more result", iterator.hasNext());
+        assertEquals("Should provide Eisbach Deep Snow.ogg as second iteration result", list.get(2), iterator.next());
+        assertFalse("Should only provide two elements", iterator.hasNext());
+    }
 
-	@Test
-	public void testSaveAsM3U() {
-		PlayList pl = new PlayList();
-		AudioFile tf1 = new TaggedFile("audiofiles/Rock 812.mp3");
-		AudioFile tf2 = new TaggedFile("audiofiles/Motiv 5. Symphonie von Beethoven.ogg");
-		AudioFile tf3 = new TaggedFile("audiofiles/Eisbach Deep Snow.ogg");
+    @Test
+    public void testJumpToAudioFile() throws NotPlayableException {
+        List<AudioFile> list = Arrays.asList(
+                new TaggedFile("audiofiles/Rock 812.mp3"),
+                new TaggedFile("audiofiles/Motiv 5. Symphonie von Beethoven.ogg"),
+                new TaggedFile("audiofiles/Eisbach Deep Snow.ogg"));
 
-		pl.getList().add(tf1);
-		pl.getList().add(tf2);
-		pl.getList().add(tf3);
+        ControllablePlayListIterator iterator = new ControllablePlayListIterator(list);
 
-		pl.saveAsM3U("test.m3u");
-		List<String> lines = readFile("test.m3u");
-		assertEquals("m3u file does not contain the correct number of lines!",
-				3, lines.size());
-		String expected = tf1.getPathname() + "::"
-				+ tf2.getPathname() + "::"
-				+ tf3.getPathname();
-		String actual = lines.get(0) + "::"
-				+ lines.get(1) + "::"
-				+ lines.get(2);
-		assertEquals("content of m3u file is not correct!", expected, actual);
-	}
+        assertTrue("Iterator should provide one more result", iterator.hasNext());
+        assertEquals("Should provide Rock 812.mp3 as first iteration result", list.get(0), iterator.next());
+
+        assertEquals("Should provide Rock 812.mp3 with jump to call", list.get(0),
+                iterator.jumpToAudioFile(list.get(0)));
+
+        assertTrue("Iterator should provide one more result", iterator.hasNext());
+        assertEquals("Should provide Motiv 5. Symphonie von Beethoven.ogg as first iteration result", list.get(1),
+                iterator.next());
+        assertTrue("Iterator should provide one more result", iterator.hasNext());
+        assertEquals("Should provide Eisbach Deep Snow.ogg as second iteration result", list.get(2), iterator.next());
+        assertFalse("Should only provide two elements", iterator.hasNext());
+
+        assertEquals("Should provide Eisbach Deep Snow.ogg as second iteration result", list.get(2),
+                iterator.jumpToAudioFile(list.get(2)));
+        assertFalse("Should not has next element after jumping to last one", iterator.hasNext());
+    }
 }

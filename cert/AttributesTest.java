@@ -1,3 +1,5 @@
+package studiplayer.cert;
+
 import static java.lang.reflect.Modifier.isFinal;
 import static java.lang.reflect.Modifier.isPublic;
 import static java.lang.reflect.Modifier.isStatic;
@@ -8,49 +10,71 @@ import java.lang.reflect.Field;
 
 import org.junit.Test;
 
+import studiplayer.audio.AlbumComparator;
+import studiplayer.audio.AudioFile;
+import studiplayer.audio.AudioFileFactory;
+import studiplayer.audio.AuthorComparator;
+import studiplayer.audio.DurationComparator;
+import studiplayer.audio.NotPlayableException;
+import studiplayer.audio.PlayList;
+import studiplayer.audio.SampledFile;
+import studiplayer.audio.SortCriterion;
+import studiplayer.audio.TaggedFile;
+import studiplayer.audio.TitleComparator;
+import studiplayer.audio.WavFile;
+
 @SuppressWarnings("rawtypes")
 public class AttributesTest {
-    // List of all classes
+    // Liste aller Klassen
     private Class[] clazzA = {
+            AlbumComparator.class,
             AudioFile.class,
+            AudioFileFactory.class,
+            AuthorComparator.class,
+            DurationComparator.class,
+            NotPlayableException.class,
+            PlayList.class,
             SampledFile.class,
+            SortCriterion.class,
             TaggedFile.class,
+            TitleComparator.class,
             WavFile.class,
-    };
+            };
 
-    /**
-     * Test all classes in array clazzA
-     */
     @Test
     public void testAttributes() {
+        // Teste alle Klassen im Array clazzA
         for (Class theClass : clazzA) {
             try {
-                // Test all attributes of theClass
+                // Teste alle Attribute
                 for (Field field : theClass.getDeclaredFields()) {
                     field.setAccessible(true);
                     String attShort = field.getName();
 
-                    /**
-                     * Attribute names should start with a lowercase letter
-                     * Exceptions
-                     * - synthetic attributes
-                     * - constants (final modifier)
-                     */
-                    assertTrue("Attribute " + attShort
-                            + "; name should begin with lowercase letter!",
+                    // Attributnamen beginnen mit kleinen Buchstaben
+                    //
+                    // Ausnahmen:
+                    // - synthetische Attribute (etwa Expansionen von ENUMS)
+                    // - Konstanten: also Modifier final
+                    assertTrue(
+                            "Attribut "
+                                    + attShort
+                                    + "; Name des Attributs soll mit Kleinbuchstaben anfangen",
                             Character.isLowerCase(attShort.charAt(0))
                                     || field.isSynthetic()
-                                    || isFinal(field.getModifiers()));
+                                    || isFinal(field.getModifiers()) );
 
-                    /**
-                     * Attributes should not be public
-                     * Exceptions:
-                     * - static attributes defined with static modifier
-                     * - synthetic attributes
-                     */
+                    // Attribute sind nicht public
+                    //
+                    // Ausnahmen:
+                    // - statische Attribute: also Modifier static
+                    // - synthetische Attribute (diese werden aber auch immer static generiert)
                     int mod = field.getModifiers();
-                    assertTrue("attribute '" + attShort + "' should not be public!",
-                            !isPublic(mod) || isStatic(field.getModifiers()));
+                    // Kodierung der Implikation: a -> b == ~a || b        
+                    assertTrue("Zugriff auf Attribut'" + attShort
+                            + "' darf nicht public sein!", 
+                            !isPublic(mod) || isStatic(field.getModifiers())                            
+                    );
                 }
             } catch (SecurityException e) {
                 fail(e.toString());

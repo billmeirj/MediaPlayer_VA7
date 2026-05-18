@@ -1,3 +1,4 @@
+package studiplayer.audio;
 import studiplayer.basic.BasicPlayer;
 import java.io.*;
 

@@ -1,3 +1,4 @@
+package studiplayer.audio;
 import java.util.LinkedList;
 import java.util.List;
 import java.io.File;

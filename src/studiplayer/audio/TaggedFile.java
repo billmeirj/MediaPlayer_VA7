@@ -1,4 +1,6 @@
+package studiplayer.audio;
 import java.util.Map;
+
 import studiplayer.basic.TagReader;
 
 public class TaggedFile extends SampledFile{

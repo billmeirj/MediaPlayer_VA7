@@ -1,3 +1,4 @@
+package studiplayer.audio;
 
 public class AudioFileFactory {
 

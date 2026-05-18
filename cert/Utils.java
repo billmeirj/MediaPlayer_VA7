@@ -1,3 +1,5 @@
+package studiplayer.cert;
+
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -76,7 +78,7 @@ public class Utils {
 			allowedNames.add(name);
 		}
 		for(Method m : targetClass.getDeclaredMethods()) {
-			if(!Modifier.isPrivate(m.getModifiers())) {
+			if(!Modifier.isPrivate(m.getModifiers()) && !m.isSynthetic()) {
 				if(!allowedNames.contains(m.getName())) {
 					fail("Method " + m.getName() + " should not be public, protected or package internal. Only " + String.join(", ", names) + " are allowed.");
 				}

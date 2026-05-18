@@ -1,3 +1,4 @@
+package studiplayer.audio;
 import studiplayer.basic.BasicPlayer;
 
 public abstract class SampledFile extends AudioFile {
