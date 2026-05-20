@@ -1,13 +1,25 @@
 package studiplayer.audio;
+import java.io.File;
+
 import studiplayer.basic.BasicPlayer;
 
 public abstract class SampledFile extends AudioFile {
-	public SampledFile () {
+	
+	public SampledFile () throws NotPlayableException{
 		super();
+		
+		if(title.isEmpty() || !new File(title).canRead()) {
+			throw new NotPlayableException(title, "File kann nicht gelesen werden");
+		} //muss das da überhaupt hin???
+		
 	}
 	
-	public SampledFile (String path) {
+	public SampledFile (String path) throws NotPlayableException{
 		super(path);
+		
+		if(title.isEmpty() || !new File(title).canRead()) {
+			throw new NotPlayableException(title, "File kann nicht gelesen werden");
+		}
 	}
 	
 	public void play () {

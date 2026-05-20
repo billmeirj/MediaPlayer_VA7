@@ -1,17 +1,28 @@
 package studiplayer.audio;
+import java.io.File;
 import java.util.Map;
 
 import studiplayer.basic.TagReader;
 
 public class TaggedFile extends SampledFile{
-	public TaggedFile(String path) {
+	
+	public TaggedFile(String path) throws NotPlayableException {
 		super(path);
+		
+		if(!new File(title).canRead()) {
+			throw new NotPlayableException(title, "File kann nicht gelesen werden");
+		} // oder reicht auch ohne isEmpty
+		
 		readAndStoreTags();
 	}
 
 	private String album = "";
 	
-	public void readAndStoreTags() {
+	public void readAndStoreTags() throws NotPlayableException {
+		if(title.isEmpty() || !new File(title).canRead()) { //oder eher mit isEmpty
+			throw new NotPlayableException(title, "File kann nicht gelesen werden");
+		}
+		
 		Map<String, Object> tagMap = TagReader.readTags(getPathname());
 		
 		//aufrufen von Werten aus der Map mit get

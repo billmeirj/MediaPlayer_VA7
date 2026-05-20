@@ -86,8 +86,12 @@ public class PlayList {
 					continue;
 				}
 				
-				AudioFile newSong = AudioFileFactory.createAudioFile(line);
-				this.audioFile.add(newSong);
+				try {
+					AudioFile audioFile = AudioFileFactory.createAudioFile(line);
+					this.audioFile.add(audioFile);
+				} catch (NotPlayableException e){
+					e.printStackTrace();
+				}
 			}
 		} catch (IOException e) {
 			throw new RuntimeException("Fehler beim Lesen der Datei " + pathname);

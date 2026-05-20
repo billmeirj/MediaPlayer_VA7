@@ -6,7 +6,12 @@ public class AudioFileFactory {
 		
 	}
 	
-	public static AudioFile createAudioFile(String path) {
+	public static AudioFile createAudioFile(String path) throws NotPlayableException{
+		
+		if (!path.toLowerCase().endsWith("mp3") || !path.toLowerCase().endsWith("wav")) {
+			throw new NotPlayableException(path, "Unbekannte Endung der Datei.");
+		}
+		
 		int lastIndex = path.lastIndexOf(".");
 		
 		if(lastIndex == -1) {

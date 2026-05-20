@@ -10,11 +10,19 @@ public abstract class AudioFile {
 	protected String title;
 	protected long duration;
 
-	public AudioFile(){
+	public AudioFile() throws NotPlayableException {
 		this("");
+		
+		if(pathname.isEmpty() || !new File(pathname).canRead()) {
+			throw new NotPlayableException(pathname, "File kann nicht gelesen werden");
+		}
 	}
 	
-	public AudioFile (String path) {
+	public AudioFile (String path) throws NotPlayableException {
+		if(pathname.isEmpty() || !new File(pathname).canRead()) {
+			throw new NotPlayableException(pathname, "File kann nicht gelesen werden");
+		}
+		
 		this.pathname = path;
 		
 		parsePathname(path);

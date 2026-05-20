@@ -1,9 +1,20 @@
 package studiplayer.audio;
+import java.io.File;
+
 import studiplayer.basic.WavParamReader;
 
 public class WavFile extends SampledFile{
-	public WavFile(String path) {
+	
+	public WavFile(String path) throws NotPlayableException {
 		super(path);
+		
+//		if(title.isEmpty() || !new File(title).canRead()) {
+//			throw new NotPlayableException(title, "File kann nicht gelesen werden");
+//		}
+		
+		if (title.isEmpty() || !title.toLowerCase().endsWith(".wav")) {
+			throw new NotPlayableException(title, "WavFile kann keine MP3 Dateien laden.");
+		}
 		
 		readAndSetDurationFromFile();
 	}
@@ -19,7 +30,11 @@ public class WavFile extends SampledFile{
 		return (long) duration; //long als rückgabewert
 	}
 	
-	public void readAndSetDurationFromFile() {
+	public void readAndSetDurationFromFile() throws NotPlayableException {
+		if(title.isEmpty() || !new File(title).canRead()) {
+			throw new NotPlayableException(title, "File kann nicht gelesen werden");
+		}
+		
 		//abrufen von Werten und aufrufen der Methode
 		WavParamReader.readParams(getPathname());
 		
