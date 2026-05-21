@@ -11,10 +11,6 @@ public abstract class SampledFile extends AudioFile {
 	
 	public SampledFile (String path) throws NotPlayableException{
 		super(path);
-		
-//		if(title.isEmpty() || !new File(title).canRead()) {
-//			throw new NotPlayableException(title, "File kann nicht gelesen werden");
-//		}
 	}
 	
 	public void play() throws NotPlayableException { 

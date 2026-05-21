@@ -11,15 +11,7 @@ public class WavFile extends SampledFile{
 	
 	public WavFile(String path) throws NotPlayableException {
 		super(path);
-		
-//		if(path == null || path.isEmpty()) {
-//			throw new NotPlayableException(path, "File kann nicht gelesen werden");
-//		}
-		
-//		if (title.isEmpty() || title == null || !title.toLowerCase().endsWith(".wav")) {
-//			throw new NotPlayableException(title, "WavFile kann keine MP3 Dateien laden.");
-//		}
-		
+				
 		readAndSetDurationFromFile();
 	}
 
