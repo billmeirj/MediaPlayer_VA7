@@ -1,4 +1,4 @@
-package studiplayer.cert;
+//package studiplayer.cert;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;

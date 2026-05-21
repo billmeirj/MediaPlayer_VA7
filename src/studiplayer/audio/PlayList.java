@@ -15,7 +15,7 @@ public class PlayList {
 		this.current = 0;
 	}
 	
-	public PlayList(String m3uPathname) {
+	public PlayList(String m3uPathname) throws NotPlayableException {
 		this.loadFromM3U(m3uPathname);
 	}
 
@@ -66,7 +66,7 @@ public class PlayList {
 		
 	}
 	
-	public void loadFromM3U (String pathname) {
+	public void loadFromM3U (String pathname) throws NotPlayableException {
 		
 		this.audioFile.clear();
 		this.current = 0;
@@ -94,7 +94,7 @@ public class PlayList {
 				}
 			}
 		} catch (IOException e) {
-			throw new RuntimeException("Fehler beim Lesen der Datei " + pathname);
+			throw new NotPlayableException("Fehler beim Lesen der Datei " + pathname, pathname);
 		} finally {
 			System.out.println("File " + pathname + " read!");
 			scanner.close();

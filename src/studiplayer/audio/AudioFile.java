@@ -12,15 +12,11 @@ public abstract class AudioFile {
 
 	public AudioFile() throws NotPlayableException {
 		this("");
-		
-		if(pathname.isEmpty() || !new File(pathname).canRead()) {
-			throw new NotPlayableException(pathname, "File kann nicht gelesen werden");
-		}
 	}
 	
 	public AudioFile (String path) throws NotPlayableException {
-		if(pathname.isEmpty() || !new File(pathname).canRead()) {
-			throw new NotPlayableException(pathname, "File kann nicht gelesen werden");
+		if(path == null || path.isEmpty()) {
+			throw new NotPlayableException(path, "File kann nicht gelesen werden");
 		}
 		
 		this.pathname = path;
@@ -34,7 +30,7 @@ public abstract class AudioFile {
 		return System.getProperty("os.name").toLowerCase().indexOf("win") >= 0;
 	}
 	
-	public void parsePathname(String path) {
+	public void parsePathname(String path) throws NotPlayableException {
 		//Leerzeichen vorne und hinten entfernen
 		path = path.trim();
 		if(path.isEmpty()) {
@@ -102,7 +98,7 @@ public abstract class AudioFile {
 
 		File file = new File(this.pathname);
 		if (!file.canRead()) {
-			throw new RuntimeException("Datei ist nicht lesbar: " + this.pathname);
+			throw new NotPlayableException (this.pathname, "Datei ist nicht lesbar: " + this.pathname);
 		}
 	}
 	
@@ -174,7 +170,7 @@ public abstract class AudioFile {
 		
 	}
 	
-	public abstract void play() ;
+	public abstract void play() throws NotPlayableException;
 	
 	public abstract void togglePause();
 	

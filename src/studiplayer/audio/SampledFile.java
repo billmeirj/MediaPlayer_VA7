@@ -7,23 +7,22 @@ public abstract class SampledFile extends AudioFile {
 	
 	public SampledFile () throws NotPlayableException{
 		super();
-		
-		if(title.isEmpty() || !new File(title).canRead()) {
-			throw new NotPlayableException(title, "File kann nicht gelesen werden");
-		} //muss das da überhaupt hin???
-		
 	}
 	
 	public SampledFile (String path) throws NotPlayableException{
 		super(path);
 		
-		if(title.isEmpty() || !new File(title).canRead()) {
-			throw new NotPlayableException(title, "File kann nicht gelesen werden");
-		}
+//		if(title.isEmpty() || !new File(title).canRead()) {
+//			throw new NotPlayableException(title, "File kann nicht gelesen werden");
+//		}
 	}
 	
-	public void play () {
-		BasicPlayer.play(getPathname());
+	public void play() throws NotPlayableException { 
+		try {
+			studiplayer.basic.BasicPlayer.play(getPathname());
+		} catch (Exception e){
+			throw new NotPlayableException(getPathname(), "Fehler beim Abspielen der Datei." );
+		}
 	}
 	
 	public void togglePause() {

@@ -1,4 +1,4 @@
-package studiplayer.test;
+//package studiplayer.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
