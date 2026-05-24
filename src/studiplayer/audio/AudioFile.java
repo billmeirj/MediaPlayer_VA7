@@ -170,6 +170,9 @@ public abstract class AudioFile {
 //		
 //	}
 	
+	//Methode so schreiben, wenn Author/Titel nicht vorhanden, dann leeren String zurückgeben 
+	//ansonsten nach Vorgaben
+	//damit Comperator richtig sortieren kann
 	public String toString() {
 		if (getAuthor() == null) {
 			return "";

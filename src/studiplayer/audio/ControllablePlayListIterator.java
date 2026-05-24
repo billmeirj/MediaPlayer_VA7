@@ -4,6 +4,8 @@ import java.util.Iterator;
 import java.util.List;
 
 public class ControllablePlayListIterator implements Iterator<AudioFile> {
+	
+	//Wiederabeliste von Audiodatein, erlaubt zu bestimmten Titel zu springen
 	private List<AudioFile> list;
 	private int current;
 	
@@ -12,11 +14,13 @@ public class ControllablePlayListIterator implements Iterator<AudioFile> {
 		current = 0;
 	}
 
+	//prüft, ob weitere Dateien in Liste vorhaden
 	@Override
 	public boolean hasNext() {
 		return current < list.size();
 	}
 
+	//gibt aktuellen Titel zurück und wechselt auf nächsten titel
 	@Override
 	public AudioFile next() {
 		
@@ -25,6 +29,8 @@ public class ControllablePlayListIterator implements Iterator<AudioFile> {
 		return currentFile;
 	}
 	
+	//Springt zu bestimmter Audiodatei
+	//so gesetzt, dass 'next' Element nach aktueller Datei liefert
 	public AudioFile jumpToAudioFile (AudioFile file) {
 		
 		int findIndex = list.indexOf(file);

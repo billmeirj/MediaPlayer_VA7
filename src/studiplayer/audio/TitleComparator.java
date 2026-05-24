@@ -4,6 +4,8 @@ import java.util.Comparator;
 
 public class TitleComparator implements Comparator<AudioFile>{
 
+	//sortieren nach Titel
+	@Override
 	public int compare(AudioFile o1, AudioFile o2) {
 		
 		if (o1 == null || o2 == null) {

@@ -134,10 +134,12 @@ public class PlayList {
 		return current;
 	}
 	
+	//Wert aktualisieren
 	public void setCurrent(int current) {
 		this.current = current;		
 	}
 	
+	//Wert aktualisieren
 	public void setSearch (String value) {
 		this.search = value;
 	}
@@ -146,6 +148,7 @@ public class PlayList {
 		return search;
 	}
 	
+	//Wert aktualisieren
 	public void setSortCriterion (SortCriterion value) {
 		this.sortCriterion = value;
 	}

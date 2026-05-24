@@ -4,6 +4,7 @@ import java.util.Comparator;
 
 public class AuthorComparator implements Comparator<AudioFile>{
 
+	//Sortieren nach Autor
 	@Override
 	public int compare(AudioFile o1, AudioFile o2) {
 		

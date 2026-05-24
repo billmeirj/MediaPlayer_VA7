@@ -4,6 +4,7 @@ import java.util.Comparator;
 
 public class DurationComparator implements Comparator<AudioFile>{
 
+	//Sortieren nach Duration
 	@Override
 	public int compare (AudioFile o1, AudioFile o2) {
 		if (o1 == null || o2 == null) {

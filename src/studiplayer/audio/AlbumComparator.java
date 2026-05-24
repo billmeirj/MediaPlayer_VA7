@@ -4,6 +4,7 @@ import java.util.Comparator;
 
 public class AlbumComparator implements Comparator<AudioFile>{
 	
+	//Sortierung nach Album, ohne Album ganz oben
 	public int compare (AudioFile o1, AudioFile o2) {
 		
 		if (o1 == null || o2 == null) {
