@@ -27,8 +27,8 @@ public class WavFile extends SampledFile{
 	}
 	
 	public void readAndSetDurationFromFile() throws NotPlayableException {
-		if(title.isEmpty() || !new File(title).canRead()) {
-			throw new NotPlayableException(title, "File kann nicht gelesen werden");
+		if(getPathname().isEmpty() || !new File(getPathname()).canRead()) {
+			throw new NotPlayableException(getPathname(), "File kann nicht gelesen werden");
 		}
 		
 		//abrufen von Werten und aufrufen der Methode

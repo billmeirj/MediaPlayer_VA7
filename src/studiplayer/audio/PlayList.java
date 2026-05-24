@@ -10,12 +10,17 @@ import java.util.Scanner;
 public class PlayList {
 	
 	private int current;
+	private String search;
+	private SortCriterion sortCriterion;
+	
 	
 	public PlayList() {
 		this.current = 0;
+		this.sortCriterion = SortCriterion.DEFAULT;
 	}
 	
 	public PlayList(String m3uPathname) throws NotPlayableException {
+		this.sortCriterion = SortCriterion.DEFAULT;
 		this.loadFromM3U(m3uPathname);
 	}
 
@@ -131,6 +136,22 @@ public class PlayList {
 	
 	public void setCurrent(int current) {
 		this.current = current;		
+	}
+	
+	public void setSearch (String value) {
+		this.search = value;
+	}
+	
+	public String getSearch () {
+		return search;
+	}
+	
+	public void setSortCriterion (SortCriterion value) {
+		this.sortCriterion = value;
+	}
+	
+	public SortCriterion getSortCriterion () {
+		return sortCriterion;
 	}
 	
 }

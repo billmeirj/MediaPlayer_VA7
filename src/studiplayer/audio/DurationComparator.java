@@ -4,6 +4,7 @@ import java.util.Comparator;
 
 public class DurationComparator implements Comparator<AudioFile>{
 
+	@Override
 	public int compare (AudioFile o1, AudioFile o2) {
 		if (o1 == null || o2 == null) {
 			throw new RuntimeException("Parameter darf nicht null sein.");
@@ -23,7 +24,7 @@ public class DurationComparator implements Comparator<AudioFile>{
 		} else {
 			
 			long duration1 = ((SampledFile) o1).getDuration();
-			long duration2 = ((SampledFile) o2).getDuration();
+			long duration2 = ((SampledFile)o2).getDuration();
 			
 			return Long.compare(duration1, duration2);
 		}

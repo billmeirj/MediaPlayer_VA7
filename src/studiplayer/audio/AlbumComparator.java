@@ -25,6 +25,13 @@ public class AlbumComparator implements Comparator<AudioFile>{
 			String album1 = ((TaggedFile) o1).getAlbum();
 			String album2 = ((TaggedFile) o2).getAlbum();
 			
+			if(album1 == null) {
+				album1 ="";
+			}
+			if(album2 == null) {
+				album2 ="";
+			}
+			
 			return album1.compareTo(album2);
 		}
 	}

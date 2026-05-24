@@ -11,7 +11,7 @@ public abstract class AudioFile {
 	protected long duration;
 
 	public AudioFile() throws NotPlayableException {
-		this("");
+//		this("");
 	}
 	
 	public AudioFile (String path) throws NotPlayableException {
@@ -161,13 +161,28 @@ public abstract class AudioFile {
 		return title;
 	}
 	
+//	public String toString() {
+//		if (getAuthor().trim().isEmpty() || getAuthor().equals("")) {
+//			return getTitle();
+//		} else {
+//			return getAuthor() + " - " + getTitle();
+//		}
+//		
+//	}
+	
 	public String toString() {
-		if (getAuthor().trim().isEmpty() || getAuthor().equals("")) {
+		if (getAuthor() == null) {
+			return "";
+		}
+		if (getTitle() == null) {
+			return "";
+		}
+		
+		if(getAuthor().trim().isEmpty()) {
 			return getTitle();
 		} else {
 			return getAuthor() + " - " + getTitle();
 		}
-		
 	}
 	
 	public abstract void play() throws NotPlayableException;
