@@ -1,5 +1,7 @@
 package studiplayer.audio;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -12,6 +14,50 @@ public class ControllablePlayListIterator implements Iterator<AudioFile> {
 	public ControllablePlayListIterator(List<AudioFile> list) {
 		this.list = list;
 		current = 0;
+	}
+	
+	//Konstruktor, der search und sortCriterion erhält
+	//erzeugen von Abspielliste, gefiltert und sortiert nach Vorgaben
+	//search null/leer -> alle AudioInstanzen der Playlist verwenden, 
+	//sonst nur die, die bei Album, Titel, Autor String enthalten
+	
+	public ControllablePlayListIterator(List<AudioFile> list, String search, SortCriterion sortCriterion) {
+		this.current = 0;
+		this.list = new ArrayList<AudioFile>();
+		
+		if (search == null || search.trim().isEmpty()) {
+			this.list.addAll(list);
+		} else {
+			for(AudioFile file : list) {
+				if(file.getAuthor() != null && file.getAuthor().contains(search)) {
+					this.list.add(file);
+				}
+				else if (file.getTitle() != null && file.getTitle().contains(search)) {
+					this.list.add(file);
+				}
+				else if ((file instanceof TaggedFile) 
+						&& ((TaggedFile) file).getAlbum() != null
+						&& ((TaggedFile) file).getAlbum().contains(search)){
+					this.list.add(file);
+				}
+			}
+		}
+		
+		if(sortCriterion == null || sortCriterion == SortCriterion.DEFAULT) {
+		}
+		else if (sortCriterion == SortCriterion.ALBUM) {
+			this.list.sort(new AlbumComparator());
+		}
+		else if (sortCriterion == SortCriterion.AUTHOR) {
+			this.list.sort(new AuthorComparator());
+		}
+		else if (sortCriterion == SortCriterion.TITLE) {
+			this.list.sort(new TitleComparator());
+		}
+		else if (sortCriterion == SortCriterion.DURATION) {
+			this.list.sort(new DurationComparator());
+		}
+		
 	}
 
 	//prüft, ob weitere Dateien in Liste vorhaden

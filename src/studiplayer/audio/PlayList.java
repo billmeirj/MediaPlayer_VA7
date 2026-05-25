@@ -1,4 +1,5 @@
 package studiplayer.audio;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.io.File;
@@ -7,7 +8,7 @@ import java.io.IOException;
 import java.util.Scanner;
 
 
-public class PlayList {
+public class PlayList implements Iterable<AudioFile> {
 	
 	private int current;
 	private String search;
@@ -155,6 +156,12 @@ public class PlayList {
 	
 	public SortCriterion getSortCriterion () {
 		return sortCriterion;
+	}
+
+	@Override
+	public Iterator<AudioFile> iterator() {
+		//ControllablePlayListIterator aufrufen
+		return new ControllablePlayListIterator(audioFile, search, sortCriterion);
 	}
 	
 }
