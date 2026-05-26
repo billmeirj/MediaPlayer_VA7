@@ -7,22 +7,32 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
+import javax.management.RuntimeErrorException;
+
 
 public class PlayList implements Iterable<AudioFile> {
 	
-	private int current;
+	//private int current;
 	private String search;
 	private SortCriterion sortCriterion;
+	private ControllablePlayListIterator playListIterator;
+	private AudioFile currentSong;
 	
 	
 	public PlayList() {
-		this.current = 0;
+		//this.current = 0;
 		this.sortCriterion = SortCriterion.DEFAULT;
+		resetIterator();
 	}
 	
 	public PlayList(String m3uPathname) throws NotPlayableException {
 		this.sortCriterion = SortCriterion.DEFAULT;
-		this.loadFromM3U(m3uPathname);
+		try {
+			this.loadFromM3U(m3uPathname);
+		} catch (NotPlayableException e) {
+			throw new RuntimeException(e);
+		}
+		
 	}
 
 	//Liste für Aggregation
@@ -38,11 +48,13 @@ public class PlayList implements Iterable<AudioFile> {
 		if (file != null) {
 			this.audioFile.add(file);
 		}
+		resetIterator();
 	}
 	
 	//remove Methode
 	public void remove (AudioFile file) {
 		this.audioFile.remove(file);
+		resetIterator();
 	}
 	
 	//Anzahl AudioFiles in Liste
@@ -52,30 +64,73 @@ public class PlayList implements Iterable<AudioFile> {
 	}
 	
 	public AudioFile currentAudioFile() {
+		//wenn leer
 		if (audioFile.isEmpty()) {
 			return null;
 		}
 		
-		if (current < 0 || current >= audioFile.size()) {
-			return null;
+		//wenn null
+		if(playListIterator == null) {
+			resetIterator();
 		}
 		
-		return audioFile.get(current);
+		//Song bekannt
+		if (currentSong != null) { //|| currentSong >= audioFile.size()
+			return currentSong;
+		}
+		
+		//Song unbekannt
+		if(currentSong == null) {
+			if(playListIterator.hasNext()) {
+				currentSong = playListIterator.next();
+			} else {
+				resetIterator();
+				currentSong = playListIterator.next();
+			}
+		}
+			
+		return currentSong;
+		//return audioFile.get(current);
 	}
 	
 	public void nextSong() {
-		current ++;
-		
-		if (current < 0 || current >= audioFile.size()) {
-			current = 0;
+		if(audioFile.isEmpty()) {
+			currentSong = null;
+			return;
 		}
 		
+		//falls currentSong noch nicht gesetzt wurde
+		if(currentSong == null) {
+			if(playListIterator.hasNext()) {
+				playListIterator.next();
+			}
+		}
+		//nächsten Song abspielen
+		if (playListIterator.hasNext()) {
+			currentSong = playListIterator.next();
+		} else {
+			//Playlist zurücksetzten
+			resetIterator();
+			if (playListIterator.hasNext()) {
+				currentSong = playListIterator.next();
+			} else {
+				currentSong = null;
+			}
+			
+		}
+		
+//		current ++;
+//		
+//		if (current < 0 || current >= audioFile.size()) {
+//			current = 0;
+//		}
+//		
 	}
 	
 	public void loadFromM3U (String pathname) throws NotPlayableException {
 		
 		this.audioFile.clear();
-		this.current = 0;
+		//this.current = 0;
 		Scanner scanner = null;
 		
 		try {
@@ -105,6 +160,7 @@ public class PlayList implements Iterable<AudioFile> {
 			System.out.println("File " + pathname + " read!");
 			scanner.close();
 		}
+		resetIterator();
 	}
 	
 	public void saveAsM3U (String pathname) {
@@ -131,18 +187,19 @@ public class PlayList implements Iterable<AudioFile> {
 			}
 	}
 	
-	public int getCurrent() {
-		return current;
-	}
-	
-	//Wert aktualisieren
-	public void setCurrent(int current) {
-		this.current = current;		
-	}
+//	public int getCurrent() {
+//		return current;
+//	}
+//	
+//	//Wert aktualisieren
+//	public void setCurrent(int current) {
+//		this.current = current;		
+//	}
 	
 	//Wert aktualisieren
 	public void setSearch (String value) {
 		this.search = value;
+		resetIterator();
 	}
 	
 	public String getSearch () {
@@ -152,16 +209,46 @@ public class PlayList implements Iterable<AudioFile> {
 	//Wert aktualisieren
 	public void setSortCriterion (SortCriterion value) {
 		this.sortCriterion = value;
+		resetIterator();
 	}
 	
 	public SortCriterion getSortCriterion () {
 		return sortCriterion;
 	}
+	
 
 	@Override
 	public Iterator<AudioFile> iterator() {
+		// prüfen ob null
+		if (playListIterator == null) {
+			resetIterator();
+		}
+		
+		return this.playListIterator;
 		//ControllablePlayListIterator aufrufen
-		return new ControllablePlayListIterator(audioFile, search, sortCriterion);
+		//return new ControllablePlayListIterator(audioFile, search, sortCriterion);
+	}
+	
+	public void resetIterator() {
+		this.playListIterator = new ControllablePlayListIterator(audioFile, search, sortCriterion);
+		this.currentSong = null;
+	}
+	
+	public void jumpToAudioFile (AudioFile file) {
+		
+		//Iterator null
+		if(playListIterator == null) {
+			resetIterator();
+		} 
+		
+		playListIterator.jumpToAudioFile(file);
+		currentSong = file;
+		
+//		if(playListIterator.hasNext()) {
+//			currentSong = playListIterator.next();
+//		} else {
+//			currentSong = null;
+//		}
 	}
 	
 }

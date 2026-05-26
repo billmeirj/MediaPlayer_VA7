@@ -11,8 +11,11 @@ public class WavFile extends SampledFile{
 	
 	public WavFile(String path) throws NotPlayableException {
 		super(path);
-				
-		readAndSetDurationFromFile();
+		try {
+			readAndSetDurationFromFile();
+		} catch (RuntimeException e) {
+			throw new NotPlayableException(getPathname(), e);
+		}
 	}
 
 	

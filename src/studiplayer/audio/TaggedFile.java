@@ -8,10 +8,16 @@ public class TaggedFile extends SampledFile{
 	
 	public TaggedFile() throws NotPlayableException {
 		super();
+		
 	}
 	
 	public TaggedFile(String path) throws NotPlayableException {
 		super(path);
+		try {
+			readAndStoreTags();
+		} catch (RuntimeException e){
+			throw new NotPlayableException(getPathname(), e);
+		}
 		
 		
 		readAndStoreTags();
@@ -21,7 +27,7 @@ public class TaggedFile extends SampledFile{
 	
 	public void readAndStoreTags() throws NotPlayableException {
 		
-		if(getPathname().isEmpty() || !new File(getPathname()).canRead()) { //oder eher mit isEmpty
+		if(getPathname().isEmpty() || !new File(getPathname()).canRead()) { 
 			throw new NotPlayableException(getPathname(), "File kann nicht gelesen werden");
 		}
 		
