@@ -25,7 +25,7 @@ public class PlayList implements Iterable<AudioFile> {
 		resetIterator();
 	}
 	
-	public PlayList(String m3uPathname) throws NotPlayableException {
+	public PlayList(String m3uPathname) {
 		this.sortCriterion = SortCriterion.DEFAULT;
 		try {
 			this.loadFromM3U(m3uPathname);
