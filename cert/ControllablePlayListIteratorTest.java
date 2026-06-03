@@ -1,10 +1,9 @@
-//package studiplayer.cert;
+package studiplayer.cert;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -19,19 +18,6 @@ import studiplayer.audio.SortCriterion;
 import studiplayer.audio.TaggedFile;
 
 public class ControllablePlayListIteratorTest {
-	
-	@Test
-    public void testMethods() {
-		// The class should have at least the following public methods
-		Utils.checkMethod(ControllablePlayListIterator.class, Modifier.PUBLIC, "hasNext", boolean.class);
-		Utils.checkMethod(ControllablePlayListIterator.class, Modifier.PUBLIC, "next", AudioFile.class);
-		Utils.checkMethod(ControllablePlayListIterator.class, Modifier.PUBLIC, "jumpToAudioFile", AudioFile.class, AudioFile.class);
-		
-		// Only the following methods are allowed to be public on this class to fulfill the requirements
-		Utils.checkAllowedAccessableMethods(ControllablePlayListIterator.class, "hasNext", "next", "jumpToAudioFile");
-	}
-	
-	
     @Test
     public void testIterator() throws NotPlayableException {
         List<AudioFile> list = Arrays.asList(

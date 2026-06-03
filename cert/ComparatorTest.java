@@ -1,4 +1,4 @@
-//package studiplayer.cert;
+package studiplayer.cert;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -52,8 +52,8 @@ public class ComparatorTest {
         // hier eigens abgeleiteten Klasse MidiFile.
         try {
             mp3 = AudioFileFactory.createAudioFile("audiofiles/Rock 812.mp3");
-            wav = AudioFileFactory
-                    .createAudioFile("audiofiles/wellenmeister - tranquility.wav");
+            wav = AudioFileFactory.createAudioFile(
+            		"audiofiles/wellenmeister - tranquility.wav");
             midi1 = new MidiFile("audiofiles/kein.wav.sondern.ogg");
             midi2 = new MidiFile("audiofiles/Rock 812.mp3");
         } catch (NotPlayableException e) {

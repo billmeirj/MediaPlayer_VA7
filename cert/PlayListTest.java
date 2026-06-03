@@ -1,4 +1,4 @@
-//package studiplayer.cert;
+package studiplayer.cert;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -279,6 +279,9 @@ public class PlayListTest {
     
     private List<AudioFile> loop(PlayList list) {
         List<AudioFile> files = new ArrayList<>();
+        if(list.size() == 0) {
+        	return files;
+        }
         AudioFile first = list.currentAudioFile();
         files.add(first);
         AudioFile cur;
