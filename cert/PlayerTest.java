@@ -1,4 +1,4 @@
-package studiplayer.cert;
+//package studiplayer.cert;
 
 import static java.lang.reflect.Modifier.isFinal;
 import static java.lang.reflect.Modifier.isPrivate;
