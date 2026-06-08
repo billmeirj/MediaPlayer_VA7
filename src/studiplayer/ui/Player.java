@@ -5,6 +5,7 @@ import java.net.URL;
 import javafx.application.*;
 import javafx.scene.*;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import studiplayer.audio.NotPlayableException;
@@ -142,9 +143,21 @@ public class Player extends Application {
 			this.currentSongLabel = new Label (NO_CURRENT_SONG);
 		}
 		
-		
 		//Tabelle machen
 		this.songTable = new SongTable(this.playList);
+		
+		HBox filterBox = new HBox();
+		filterBox.setSpacing(10);
+		
+		Label searchLabel = new Label("Suchtext: ");
+		Label sortLabel = new Label("Sortierung: ");
+		
+		//Filterbox befüllen
+		filterBox.getChildren().addAll(searchLabel, this.searchTextField, sortLabel, 
+										this.sortChoiceBox, this.filterButton);
+		
+		//Pane erstellen
+		TitledPane titledPane = new TitledPane("Filter", filterBox);
 		
 		BorderPane hauptPane = new BorderPane();
 		Scene scene = new Scene(hauptPane, 600, 400);
