@@ -3,9 +3,13 @@ import java.io.File;
 import java.net.URL;
 
 import javafx.application.*;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.*;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import studiplayer.audio.NotPlayableException;
@@ -159,12 +163,51 @@ public class Player extends Application {
 		//Pane erstellen
 		TitledPane titledPane = new TitledPane("Filter", filterBox);
 		
+		//Buttonbereich bauen 
+		//Info-Grid
+		GridPane infoGrid = new GridPane();
+		infoGrid.setHgap(10);
+		infoGrid.setVgap(5);
+		
+		//gridInfo.add(new Label("...: "), Spalte, Zeile)
+		//gridInfo.add(..., Spalte, Zeile)
+		//Playlist
+		infoGrid.add(new Label("Playlist: "), 0, 0); //links Text
+		infoGrid.add(this.playListLabel, 1, 0); //rechts Wert
+		
+		//Song
+		infoGrid.add(new Label("Aktueller Song: "), 0, 1);
+		infoGrid.add(this.currentSongLabel, 1, 1);
+		
+		//Spielzeit
+		infoGrid.add(new Label("Spielzeit: "), 0, 2);
+		infoGrid.add(this.playTimeLabel, 1, 2);
+		
+		//ButtonBox einfügen
+		HBox buttonBox = new HBox();
+		buttonBox.setSpacing(10);
+		buttonBox.getChildren().addAll(this.playButton, this.pauseButton, this.stopButton,
+										this.nextButton);
+		buttonBox.setAlignment(Pos.CENTER);
+		
+		//Container zusammenführen
+		VBox ContainerBottom = new VBox();
+		ContainerBottom.setSpacing(15);
+		ContainerBottom.getChildren().addAll(infoGrid, buttonBox);
+		
 		BorderPane hauptPane = new BorderPane();
+		
+		//Segmente fertigstelle
+		hauptPane.setTop(titledPane);
+		hauptPane.setCenter(this.songTable);
+		hauptPane.setBottom(ContainerBottom);
+		
 		Scene scene = new Scene(hauptPane, 600, 400);
 		
 		stage.setTitle("Test");
 		stage.setScene(scene);
 		
+		hauptPane.setPadding(new Insets(10));
 		stage.show();
 	}
 
