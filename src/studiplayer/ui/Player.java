@@ -169,7 +169,7 @@ public class Player extends Application {
 		}
 		
 		current.togglePause();
-		setButtonStates(true, true, false, false);
+		setButtonStates(false, false, false, false);
 		//Steuermethode terminate mit true aufrufen => nur Timer stoppt
 		terminateThreads(true);
 	}
