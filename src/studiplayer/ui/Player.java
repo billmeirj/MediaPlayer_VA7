@@ -75,7 +75,6 @@ public class Player extends Application {
 		} catch (Exception e) {
 			System.err.println("Fehler beim Laden der Playlist: " + e.getMessage());
 		}
-		
 	}
 	
 	//Java FX starten
@@ -251,9 +250,9 @@ public class Player extends Application {
 	//Fenster aufrufen
 	@Override
 	public void start (Stage stage) throws Exception {
-		if (this.useCertPlayList) {
+		if (this.useCertPlayList && this.playList == null) {
 			loadPlayList("playList.cert.m3u");
-		} else {
+		} else if(this.playList == null){
 			FileChooser fileChooser = new FileChooser();
 			
 			File selectedFile = fileChooser.showOpenDialog(stage);
@@ -271,6 +270,8 @@ public class Player extends Application {
 		this.pauseButton = createButton("pause.jpg");
 		this.stopButton = createButton("stop.jpg");
 		this.nextButton = createButton("next.jpg");
+		
+		setButtonStates(false, true, true, false);
 		
 		this.searchTextField = new TextField("");
 		
@@ -295,6 +296,10 @@ public class Player extends Application {
 		}
 		
 		//Tabelle machen
+//		if(this.playList == null) {
+//			this.playList = new PlayList(); // leere Playlist
+//		}
+		
 		this.songTable = new SongTable(this.playList);
 		
 		HBox filterBox = new HBox();
@@ -351,7 +356,7 @@ public class Player extends Application {
 		
 		Scene scene = new Scene(hauptPane, 600, 400);
 		
-		stage.setTitle("Test");
+		stage.setTitle("StudiPlayer");
 		stage.setScene(scene);
 		
 		hauptPane.setPadding(new Insets(10));
