@@ -169,7 +169,7 @@ public class Player extends Application {
 		}
 		
 		current.togglePause();
-		setButtonStates(false, true, false, false);
+		setButtonStates(true, false, false, false);
 		//Steuermethode terminate mit true aufrufen => nur Timer stoppt
 		terminateThreads(true);
 	}
@@ -357,7 +357,7 @@ public class Player extends Application {
 		
 		Scene scene = new Scene(hauptPane, 600, 400);
 		
-		stage.setTitle("Studiplayer");
+		stage.setTitle("APA Player");
 		stage.setScene(scene);
 		
 		hauptPane.setPadding(new Insets(10));
