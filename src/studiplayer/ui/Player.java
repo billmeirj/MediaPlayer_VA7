@@ -71,7 +71,8 @@ public class Player extends Application {
 			pathname = DEFAULT_PLAYLIST;
 		}
 		try {
-			this.playList = new PlayList(pathname);
+			PlayList newList = new PlayList(pathname);
+			this.playList = newList;
 		} catch (Exception e) {
 			System.err.println("Fehler beim Laden der Playlist: " + e.getMessage());
 		}
@@ -168,7 +169,7 @@ public class Player extends Application {
 		}
 		
 		current.togglePause();
-		setButtonStates(false, true, true, false);
+		setButtonStates(true, true, false, false);
 		//Steuermethode terminate mit true aufrufen => nur Timer stoppt
 		terminateThreads(true);
 	}

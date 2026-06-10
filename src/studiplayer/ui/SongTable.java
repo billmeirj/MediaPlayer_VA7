@@ -63,10 +63,6 @@ public class SongTable extends TableView<Song> {
 	public void refreshSongs() {
 		tableData.clear();
 		
-		if(playList == null) {
-			return;
-		}
-		
 		for (AudioFile af : playList) {
 			String album = "";
 			String laenge = "";
