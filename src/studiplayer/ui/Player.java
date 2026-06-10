@@ -71,10 +71,10 @@ public class Player extends Application {
 			pathname = DEFAULT_PLAYLIST;
 		}
 		try {
-			PlayList newList = new PlayList(pathname);
-			this.playList = newList;
+			this.playList = new PlayList(pathname);
 		} catch (Exception e) {
 			System.err.println("Fehler beim Laden der Playlist: " + e.getMessage());
+			this.playList = new PlayList();
 		}
 	}
 	
@@ -297,9 +297,9 @@ public class Player extends Application {
 		}
 		
 		//Tabelle machen
-//		if(this.playList == null) {
-//			this.playList = new PlayList(); // leere Playlist
-//		}
+		if(this.playList == null) {
+			this.playList = new PlayList(); // leere Playlis
+		}
 		
 		this.songTable = new SongTable(this.playList);
 		
