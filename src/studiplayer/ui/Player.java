@@ -12,14 +12,13 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import studiplayer.audio.AudioFile;
 import studiplayer.audio.NotPlayableException;
 import studiplayer.audio.PlayList;
 import studiplayer.audio.SortCriterion;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.*;
-
-
 
 public class Player extends Application {
 
@@ -100,10 +99,92 @@ public class Player extends Application {
 	    return button; 
 	} 
 	
+	//Hilfsmethode zum Aktualisieren der Zustände von Buttons und Labels
+	//Buttons
+	private void setButtonStates (boolean playButtonState, boolean pauseButtonState, 
+									boolean stopButtonState, boolean nextButtonState) {
+		this.playButton.setDisable(playButtonState);
+		this.pauseButton.setDisable(pauseButtonState);
+		this.stopButton.setDisable(stopButtonState);
+		this.nextButton.setDisable(nextButtonState);
+	}
+	
+	//Label
+	private void updateSongInfo (AudioFile af, String time) {
+		Platform.runLater(() -> {
+			//timeLabel aktualisieren
+			this.playTimeLabel.setText(time);
+			
+			//SongInfo aktualisieren
+			if (af == null) {
+				this.currentSongLabel.setText(NO_CURRENT_SONG);
+			} else {
+				this.currentSongLabel.setText(af.toString());
+			}
+		});
+	}
+	
+	//Player Logik schreiben 
+	//Play-Button
+	//Button true, wenn gerade nicht verwendbar
+	//Button false, wenn gerade noch verwendbar
+	private void playCurrentSong() {
+		AudioFile current = this.playList.currentAudioFile();
+		
+		if(current != null) {
+			System.out.println("Playing " + current.toString());
+			System.out.println("Filename is " + current.getFilename()); //vielleicht auch getPathname()
+			
+			//song info updaten
+			updateSongInfo(current, INITIAL_PLAY_TIME_LABEL);
+			
+			//labels richtig setzen
+			setButtonStates(true, false, false, false);
+		}
+	}
+	
+	//Pause-Button
+	private void pauseCurrentSong() {
+		AudioFile current = this.playList.currentAudioFile();
+		
+		if(current != null) {
+			System.out.println("Pausing " + current.toString());
+			System.out.println("Filename is " + current.getFilename());
+		}
+		
+	}
+	
+	//Stop-Button
+	private void stopCurrentSong() {
+		AudioFile current = this.playList.currentAudioFile();
+		
+		if(current != null) {
+			System.out.println("Stopping " + current.toString());
+			System.out.println("Filename is " + current.getFilename());
+			
+			setButtonStates(false, true, true, false);
+			
+			updateSongInfo(current, INITIAL_PLAY_TIME_LABEL);
+		}
+	}
+	
+	//Next- Button
+	private void nextSong() {
+		System.out.println("Switching to next audio file: stopped = false, paused = true");
+		
+		//aktuellen Song stoppen
+		stopCurrentSong();
+		
+		//nächsten Song laden
+		this.playList.nextSong();
+		
+		//jetzt aktuellen Song abspielen
+		playCurrentSong();
+	}
 	
 	//Fenster aufrufen
 	@Override
-	public void start(Stage stage) {
+	public void start (Stage stage) {
 		if (this.useCertPlayList) {
 			loadPlayList("playList.cert.m3u");
 		} else {
@@ -119,7 +200,7 @@ public class Player extends Application {
 			}
 		}
 		
-		this.filterButton = new Button("Filter");
+		this.filterButton = new Button("Anzeigen");
 		this.playButton = createButton("play.jpg");
 		this.pauseButton = createButton("pause.jpg");
 		this.stopButton = createButton("stop.jpg");
@@ -208,7 +289,68 @@ public class Player extends Application {
 		stage.setScene(scene);
 		
 		hauptPane.setPadding(new Insets(10));
+		
+		//Eventhandling für Anzeigen-Button
+		this.filterButton.setOnAction(e -> { 
+			
+			//Suchtext auslesen
+			String seatchText = this.searchTextField.getText();
+			//Sortierkriterium auslesen
+			SortCriterion criterion = (SortCriterion) this.sortChoiceBox.getValue();
+			
+			//Suchtext übergeben
+			this.playList.setSearch(seatchText);
+			//Sortierung übergeben
+			this.playList.setSortCriterion(criterion);
+			
+			//Tabelle aktualiesieren
+			this.songTable.refreshSongs();
+		});
+		
+		//Buttons mit Event-Handler verknüpfen 
+		//play
+		playButton.setOnAction(e -> {
+			playCurrentSong();
+		});
+		
+		//pause
+		pauseButton.setOnAction(e -> {
+			pauseCurrentSong();
+		});
+		
+		//stop
+		stopButton.setOnAction(e -> {
+			stopCurrentSong();
+		});
+		
+		//next
+		nextButton.setOnAction(e -> {
+			nextSong();
+		});
+		
+		//Tabellen-Klick einrichten
+		this.songTable.setRowSelectionHandler(e -> {
+			Song selectedSong = this.songTable.getSelectionModel().getSelectedItem();
+			
+			if(selectedSong != null) {
+				
+				//erst song stoppen
+				stopCurrentSong();
+				
+				//AudioFile laden
+				AudioFile selectedFile = selectedSong.getAudioFile();
+				
+				//zu neuem Song springen
+				this.playList.jumpToAudioFile(selectedFile);
+				
+				//jetzigen Song abspielen
+				playCurrentSong();
+			}
+			
+		});
+		
+		
+		//Fenster anzeigen
 		stage.show();
 	}
-
 }
