@@ -158,7 +158,9 @@ public class PlayList implements Iterable<AudioFile> {
 			throw new NotPlayableException("Fehler beim Lesen der Datei " + pathname, pathname);
 		} finally {
 			System.out.println("File " + pathname + " read!");
-			scanner.close();
+			if (scanner != null) {
+				scanner.close();
+			}
 		}
 		resetIterator();
 	}

@@ -48,6 +48,9 @@ public class Player extends Application {
 	//Tabelle
 	private SongTable songTable;
 	
+	//Thread Variblen deklarieren
+	private PlayerThread playerThread;
+	private TimerThread timerThread;
 	
 	public Player () {
 		
@@ -127,7 +130,7 @@ public class Player extends Application {
 	//Player Logik schreiben 
 	//Play-Button
 	//Button true, wenn gerade nicht verwendbar
-	//Button false, wenn gerade noch verwendbar
+	//Button false, wenn gerade verwendbar
 	private void playCurrentSong() {
 		AudioFile current = this.playList.currentAudioFile();
 		
@@ -135,12 +138,25 @@ public class Player extends Application {
 			System.out.println("Playing " + current.toString());
 			System.out.println("Filename is " + current.getFilename()); //vielleicht auch getPathname()
 			
-			//song info updaten
+			if(this.playerThread != null) {
+				
+				//aus der Pause holen
+				current.togglePause();
+				
+				//aktuelle Position beibehalten
+				updateSongInfo(current, current.formatPosition());
+			} else {
+				
+			//song info updaten, auch Position
 			updateSongInfo(current, INITIAL_PLAY_TIME_LABEL);
+			}
 			
 			//labels richtig setzen
 			setButtonStates(true, false, false, false);
 		}
+		
+		//Steuermethode start mit false aufrufen => Timer und Player erzugt und starten
+		startThreads(false);
 	}
 	
 	//Pause-Button
@@ -152,6 +168,10 @@ public class Player extends Application {
 			System.out.println("Filename is " + current.getFilename());
 		}
 		
+		current.togglePause();
+		setButtonStates(false, true, true, false);
+		//Steuermethode terminate mit true aufrufen => nur Timer stoppt
+		terminateThreads(true);
 	}
 	
 	//Stop-Button
@@ -166,14 +186,21 @@ public class Player extends Application {
 			
 			updateSongInfo(current, INITIAL_PLAY_TIME_LABEL);
 		}
+		
+		//Steuermethode terminate mit false aufrufen => Timer und Player stoppen
+		terminateThreads(false);
 	}
 	
 	//Next- Button
 	private void nextSong() {
 		System.out.println("Switching to next audio file: stopped = false, paused = true");
-		
+				
 		//aktuellen Song stoppen
-		stopCurrentSong();
+		//stopCurrentSong();
+		
+		//Steuermethode terminate mit false aufrufen => Timer und Player stoppen
+		//Threads sauber beenden bevor neuer Song startet
+		terminateThreads(false);
 		
 		//nächsten Song laden
 		this.playList.nextSong();
@@ -182,9 +209,48 @@ public class Player extends Application {
 		playCurrentSong();
 	}
 	
+	//Hilfsmethoden für Steuerung
+	//startThreads
+	private void startThreads(boolean onlyTimer) {
+		
+		//Starten von timerThread
+		if(this.timerThread == null) {
+			
+			//Thread erzeugen und zuweisen
+			this.timerThread = new TimerThread();
+			
+			//Thread starten
+			this.timerThread.start();
+		}
+		
+		//Starten von playerThread
+		if(onlyTimer == false && this.playerThread == null) {
+			this.playerThread = new PlayerThread();
+			this.playerThread.start();
+		}
+	}
+	
+	//terminateThreads
+	private void terminateThreads(boolean onlyTimer) {
+		
+		//timerThread stoppen
+		if(this.timerThread != null) {
+			//stoppen
+			this.timerThread.terminate();
+			//auf null setzen, weil gestoppt wurde
+			this.timerThread = null;
+		}
+		
+		//playerThread stoppen
+		if(onlyTimer == false && this.playerThread != null) {
+			this.playerThread.terminate();
+			this.playerThread = null;
+		}
+	}
+	
 	//Fenster aufrufen
 	@Override
-	public void start (Stage stage) {
+	public void start (Stage stage) throws Exception {
 		if (this.useCertPlayList) {
 			loadPlayList("playList.cert.m3u");
 		} else {
@@ -222,7 +288,7 @@ public class Player extends Application {
 		this.playTimeLabel = new Label (INITIAL_PLAY_TIME_LABEL);
 		
 		//current Song Name verwenden
-		if(this.playList.currentAudioFile() != null) {
+		if(this.playList != null && this.playList.currentAudioFile() != null) {
 			this.currentSongLabel = new Label (playList.currentAudioFile().toString());
 		} else {
 			this.currentSongLabel = new Label (NO_CURRENT_SONG);
@@ -328,14 +394,14 @@ public class Player extends Application {
 			nextSong();
 		});
 		
-		//Tabellen-Klick einrichten
+		//Tabellen-Klick handler einrichten
 		this.songTable.setRowSelectionHandler(e -> {
 			Song selectedSong = this.songTable.getSelectionModel().getSelectedItem();
 			
 			if(selectedSong != null) {
 				
-				//erst song stoppen
-				stopCurrentSong();
+				//song abbrechen
+				terminateThreads(false);
 				
 				//AudioFile laden
 				AudioFile selectedFile = selectedSong.getAudioFile();
@@ -351,6 +417,85 @@ public class Player extends Application {
 		
 		
 		//Fenster anzeigen
-		stage.show();
+		stage.show();		
+	}
+	
+	//playerThread innere Klasse entwerfen
+	//erbt von threads
+	private class PlayerThread extends Thread {
+		
+		private boolean stopped = false;
+		
+		//stoppen
+		public void terminate() {
+			AudioFile currentSong = playList.currentAudioFile();
+			
+			stopped = true;
+			if(currentSong != null) {
+				currentSong.stop();
+			}
+		}
+		
+		//starten
+		@Override
+		public void run() {
+			while(!stopped) {
+				AudioFile currentFile = playList.currentAudioFile();
+				
+				//abbruch wenn null
+				if(currentFile == null) {
+					break;
+				}
+				
+				Platform.runLater(() -> {
+					songTable.selectSong(currentFile);
+				});
+				
+				try {
+					currentFile.play();
+				} catch (NotPlayableException e){
+					e.printStackTrace();
+				}
+				
+				if(!stopped) {
+					playList.nextSong();
+				}
+			}
+		}
+	}
+	
+	//timerthread innere Klasse entwerfen
+	private class TimerThread extends Thread {
+		private boolean stopped = false;
+		
+		//stoppen und schlafen legen
+		public void terminate() {
+			stopped = true;
+			//aufwecken, falls er schläft
+			this.interrupt();
+		}
+		
+		//starten
+		@Override
+		public void run() {
+			while(!stopped) {
+				//aktuelles Lied holen
+				AudioFile currentFile = playList.currentAudioFile();
+				
+				if(currentFile == null) {
+					updateSongInfo(null, INITIAL_PLAY_TIME_LABEL);
+				} else {
+					updateSongInfo(currentFile, currentFile.formatPosition());
+				}
+				
+				//Thread schlafen legen
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					break;
+				}
+			}
+		}
+		
 	}
 }
